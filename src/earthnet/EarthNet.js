@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import Dashboard from '../layouts/Dashboard/Dashboard';
-import { Typography, makeStyles, Grid, List, ListItem, ListItemText } from '@material-ui/core';
+import { Typography, makeStyles, Grid } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import EsaLogo from '../EsaLogo';
 import EsaPaper from '../layouts/components/EsaPaper/EsaPaper';
 import EsaSelect from '../layouts/components/EsaSelect/EsaSelect';
+import EsaList from './EsaList';
 import {
   Portlet,
   PortletHeader,
@@ -66,7 +67,7 @@ const styles = theme => ({
 });
 const useStyles = makeStyles(styles);
 
-export default function Earthnet() {
+const EarthNet = () => {
   const classes = useStyles();
   const [singleValue, onChangeSingle] = useState(1);
   const [multiValue, onChangeMulti] = useState([]);
@@ -147,20 +148,25 @@ export default function Earthnet() {
                   </PortletToolbar>
                 </PortletHeader>
                 <PortletContent className={classes.portletContent} noPadding>
-                  <List>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map(
-                      option => (
-                        <ListItem
-                          key={option}
-                          className={classes.listItem}
-                          selected={isSelected(option)}
-                          onClick={() => handleSelect(option)}
-                        >
-                          <ListItemText primary={`item-${option}`} />
-                        </ListItem>
-                      )
-                    )}
-                  </List>
+                  <EsaList
+                    handleSelect={handleSelect}
+                    isSelected={isSelected}
+                    styles={classes.listItem}
+                  />
+                  {/*<List>*/}
+                  {/*  {Array.from(Array(20).keys()).map(*/}
+                  {/*    option => (*/}
+                  {/*      <ListItem*/}
+                  {/*        key={option}*/}
+                  {/*        className={classes.listItem}*/}
+                  {/*        selected={isSelected(option)}*/}
+                  {/*        onClick={() => handleSelect(option)}*/}
+                  {/*      >*/}
+                  {/*        <ListItemText primary={`item-${option}`} />*/}
+                  {/*      </ListItem>*/}
+                  {/*    )*/}
+                  {/*  )}*/}
+                  {/*</List>*/}
                 </PortletContent>
               </Portlet>
             </Grid>
@@ -175,3 +181,5 @@ export default function Earthnet() {
     </Dashboard>
   );
 }
+
+export default EarthNet;
