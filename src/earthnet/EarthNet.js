@@ -71,20 +71,6 @@ const EarthNet = () => {
   const classes = useStyles();
   const [singleValue, onChangeSingle] = useState(1);
   const [multiValue, onChangeMulti] = useState([]);
-  const [selectedOptions, setSelect] = useState([]);
-
-  const handleSelect = value => {
-    const currentIndex = selectedOptions.indexOf(value);
-    const newSelectedOptions = [...selectedOptions];
-    if (currentIndex === -1) {
-      newSelectedOptions.push(value);
-    } else {
-      newSelectedOptions.splice(currentIndex, 1);
-    }
-    setSelect(newSelectedOptions);
-  };
-
-  const isSelected = value => selectedOptions.includes(value);
 
   return (
     <Dashboard>
@@ -148,25 +134,7 @@ const EarthNet = () => {
                   </PortletToolbar>
                 </PortletHeader>
                 <PortletContent className={classes.portletContent} noPadding>
-                  <EsaList
-                    handleSelect={handleSelect}
-                    isSelected={isSelected}
-                    styles={classes.listItem}
-                  />
-                  {/*<List>*/}
-                  {/*  {Array.from(Array(20).keys()).map(*/}
-                  {/*    option => (*/}
-                  {/*      <ListItem*/}
-                  {/*        key={option}*/}
-                  {/*        className={classes.listItem}*/}
-                  {/*        selected={isSelected(option)}*/}
-                  {/*        onClick={() => handleSelect(option)}*/}
-                  {/*      >*/}
-                  {/*        <ListItemText primary={`item-${option}`} />*/}
-                  {/*      </ListItem>*/}
-                  {/*    )*/}
-                  {/*  )}*/}
-                  {/*</List>*/}
+                  <EsaList styles={classes.listItem} />
                 </PortletContent>
               </Portlet>
             </Grid>
