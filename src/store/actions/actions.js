@@ -13,6 +13,7 @@ export const fetchData = (data) => {
         if (data === 'wells') dispatch(setWells(res));
         if (data === 'logs') dispatch(setLogs(res));
         if (data === 'formations') dispatch(setFormations(res));
+        if (data === 'plots') dispatch(setPlots(res));
       })
       .catch(error => {
       })
@@ -31,6 +32,11 @@ export const setLogs = (payload) => ({
 
 export const setFormations = (payload) => ({
   type: types.SET_FORMATIONS,
+  payload
+});
+
+export const setPlots = (payload) => ({
+  type: types.SET_PLOTS,
   payload
 });
 

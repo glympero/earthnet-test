@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import Dashboard from '../layouts/Dashboard/Dashboard';
 import {  makeStyles, Grid } from '@material-ui/core';
@@ -9,27 +9,47 @@ import EsaLogo from '../EsaLogo';
 import styles from '../theme/styles'
 import { handleSelect, isSelected } from './listFunctions';
 import { fetchData } from '../store/actions/actions';
-import { isDisabled, hasData } from '../utils'
+import { isDisabled } from '../utils'
+import Plot from 'react-plotly.js';
 const useStyles = makeStyles(styles);
 
 const  Wellbore = () => {
   const dispatch = useDispatch();
-  const { wells, logs, formations, selectedWellOptions, selectedLogOptions, selectedFormationOptions } = useSelector(state => ({
+  const { wells, logs, formations, plots, selectedWellOptions, selectedLogOptions, selectedFormationOptions } = useSelector(state => ({
     wells: state.state.wells,
     logs: state.state.logs,
     formations: state.state.formations,
+    plots: state.state.plots,
     selectedWellOptions: state.state.selectedWellOptions,
     selectedLogOptions: state.state.selectedLogOptions,
     selectedFormationOptions: state.state.selectedFormationOptions
   }), shallowEqual);
 
+  const [selectedPlots, setPlots] = useState([]);
+
   useEffect(() => {
-    if(!hasData(wells, logs, formations)){
-      dispatch(fetchData('wells'));
-      dispatch(fetchData('logs'));
-      dispatch(fetchData('formations'));
-    }
-  });
+    dispatch(fetchData('wells'));
+  }, [dispatch] );
+  useEffect(() => {
+    dispatch(fetchData('logs'));
+  }, [dispatch] );
+  useEffect(() => {
+    dispatch(fetchData('formations'));
+  }, [dispatch] );
+
+  useEffect(() => {
+    const newSelected  = []
+      plots.forEach(item => {
+      if(selectedWellOptions.indexOf(item.wellId) > -1){
+        newSelected.push(item);
+      }
+    })
+    setPlots(newSelected)
+  }, [plots, selectedWellOptions] );
+
+  const showPlots = () => {
+    dispatch(fetchData('plots'));
+  }
 
   const classes = useStyles();
   return (
@@ -102,12 +122,29 @@ const  Wellbore = () => {
               <EsaButton
                 disabled={isDisabled(selectedWellOptions, selectedLogOptions, selectedFormationOptions)}
                 fullWidth
-                className={classes.button}>
+                className={classes.button}
+                onClick={showPlots}
+              >
                 Show Plot
               </EsaButton>
             </div>
           </Grid>
-        </Grid>
+          {
+            selectedPlots.length > 0 &&
+              <Grid item xs={7} md={6}>
+                <Plot
+                  style={{ height: '85vh'}}
+                  data={selectedPlots}
+                  layout={ {
+                    autosize: true,
+                    title: 'Wells Plot',
+                    useResizeHandler: true,
+                  }}
+                />
+              </Grid>
+          }
+          </Grid>
+
         <Grid item xs={12} md={7}>
           <div className={classes.logoContainer}>
             <EsaLogo />

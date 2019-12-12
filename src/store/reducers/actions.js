@@ -4,6 +4,7 @@ const INITIAL_STATE = {
   wells: [],
   logs: [],
   formations: [],
+  plots: [],
   selectedWellOptions: [],
   selectedLogOptions: [],
   selectedFormationOptions: []
@@ -32,6 +33,11 @@ const actionsReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         formations: action.payload
+      };
+    case types.SET_PLOTS:
+      return {
+        ...state,
+        plots: action.payload
       };
     case types.SET_SELECTED_WELLS:
       return {
