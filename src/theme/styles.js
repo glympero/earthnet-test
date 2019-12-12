@@ -8,7 +8,7 @@ const styles = theme => ({
     padding: theme.spacing(3)
   },
   button: { marginTop: theme.spacing(0) },
-  buttonWrapper: { marginTop: theme.spacing(3) },
+  buttonWrapper: { height: '10vh' },
   logoContainer: {
     height: '100%',
     width: '100%',
@@ -42,6 +42,9 @@ const styles = theme => ({
   },
   normalPortletContent: {
     height: '70vh'
+  },
+  shorterPortletContent: {
+    height: '60vh'
   },
   listItem: {
     cursor: 'pointer',
