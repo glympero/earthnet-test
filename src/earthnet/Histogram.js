@@ -15,7 +15,7 @@ import EsaList from './EsaList';
 import EsaLogo from '../EsaLogo';
 import styles from '../theme/styles';
 import { handleSelect, isSelected } from './listFunctions';
-import { fetchData } from '../store/actions/actions';
+import { fetchData, fetchSelectedPlots } from '../store/actions/actions';
 import { isDisabled } from '../utils';
 import Plot from 'react-plotly.js';
 import EsaPaper from '../layouts/components/EsaPaper/EsaPaper';
@@ -29,6 +29,7 @@ const Histogram = () => {
     logs,
     formations,
     plots,
+    selectedPlots,
     selectedWellOptions,
     selectedLogOptions,
     selectedFormationOptions
@@ -38,6 +39,7 @@ const Histogram = () => {
       logs: state.state.logs,
       formations: state.state.formations,
       plots: state.state.plots,
+      selectedPlots: state.state.selectedPlots,
       selectedWellOptions: state.state.selectedWellOptions,
       selectedLogOptions: state.state.selectedLogOptions,
       selectedFormationOptions: state.state.selectedFormationOptions
@@ -46,7 +48,7 @@ const Histogram = () => {
   );
   const [barModeValue, onChangeBarMode] = useState(1);
   const [orientationValue, onChangeOrientation] = useState(1);
-  const [selectedPlots, setPlots] = useState([]);
+  const [selectedFilteredPlots, setPlots] = useState([]);
 
   useEffect(() => {
     dispatch(fetchData('wells'));
@@ -59,21 +61,25 @@ const Histogram = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    if(plots.length){
+      dispatch(fetchSelectedPlots(selectedWellOptions));
+    }
+  }, [plots, selectedWellOptions, dispatch]);
+
+  useEffect(() => {
     const newSelected = [];
-    plots.forEach(item => {
-      if (selectedWellOptions.indexOf(item.wellId) > -1) {
-        let obj = {};
-        obj.type = 'histogram'
-        if(orientationValue === 1){
-          obj.x = item.x
-        }else {
-          obj.y = item.y
-        }
-        newSelected.push(obj);
+    selectedPlots.forEach(item => {
+      let obj = {};
+      obj.type = 'histogram'
+      if(orientationValue === 1){
+        obj.x = item.x
+      }else {
+        obj.y = item.y
       }
+      newSelected.push(obj);
     });
     setPlots(newSelected);
-  }, [plots, selectedWellOptions, orientationValue]);
+  }, [selectedPlots, orientationValue]);
 
   const showPlots = () => {
     dispatch(fetchData('plots'));
@@ -211,10 +217,14 @@ const Histogram = () => {
           </Grid>
         </Grid>
         <Grid item xs={12} md={7}>
-          {selectedPlots.length > 0 ? (
+          {!isDisabled(
+            selectedWellOptions,
+            selectedLogOptions,
+            selectedFormationOptions
+          ) && selectedFilteredPlots.length > 0 ? (
             <Plot
               style={{ height: '85vh' }}
-              data={selectedPlots}
+              data={selectedFilteredPlots}
               layout={{
                 autosize: true,
                 title: 'Wells Plot',

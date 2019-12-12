@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import Dashboard from '../layouts/Dashboard/Dashboard';
 import { makeStyles, Grid } from '@material-ui/core';
@@ -15,7 +15,7 @@ import EsaList from './EsaList';
 import EsaLogo from '../EsaLogo';
 import styles from '../theme/styles';
 import { handleSelect, isSelected } from './listFunctions';
-import { fetchData } from '../store/actions/actions';
+import { fetchData, fetchSelectedPlots } from '../store/actions/actions';
 import { isDisabled } from '../utils';
 import Plot from 'react-plotly.js';
 const useStyles = makeStyles(styles);
@@ -27,6 +27,7 @@ const Wellbore = () => {
     logs,
     formations,
     plots,
+    selectedPlots,
     selectedWellOptions,
     selectedLogOptions,
     selectedFormationOptions
@@ -36,14 +37,13 @@ const Wellbore = () => {
       logs: state.state.logs,
       formations: state.state.formations,
       plots: state.state.plots,
+      selectedPlots: state.state.selectedPlots,
       selectedWellOptions: state.state.selectedWellOptions,
       selectedLogOptions: state.state.selectedLogOptions,
       selectedFormationOptions: state.state.selectedFormationOptions
     }),
     shallowEqual
   );
-
-  const [selectedPlots, setPlots] = useState([]);
 
   useEffect(() => {
     dispatch(fetchData('wells'));
@@ -56,15 +56,10 @@ const Wellbore = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const newSelected = [];
-    plots.forEach(item => {
-      if (selectedWellOptions.indexOf(item.wellId) > -1) {
-        item.type = 'scatter';
-        newSelected.push(item);
-      }
-    });
-    setPlots(newSelected);
-  }, [plots, selectedWellOptions]);
+    if(plots.length){
+      dispatch(fetchSelectedPlots(selectedWellOptions));
+    }
+  }, [plots, selectedWellOptions, dispatch]);
 
   const showPlots = () => {
     dispatch(fetchData('plots'));
@@ -172,7 +167,11 @@ const Wellbore = () => {
           </Grid>
         </Grid>
         <Grid item xs={12} md={7}>
-          {selectedPlots.length > 0 ? (
+          {!isDisabled(
+            selectedWellOptions,
+            selectedLogOptions,
+            selectedFormationOptions
+          ) && selectedPlots.length > 0 ? (
             <Plot
               style={{ height: '85vh' }}
               data={selectedPlots}

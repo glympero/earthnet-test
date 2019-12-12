@@ -20,23 +20,42 @@ export const fetchData = (data) => {
   };
 }
 
-export const setWells = (payload) => ({
+export const fetchSelectedPlots = (data) => {
+  let params = `?wellId=${data.join('&wellId=')}`;
+
+  return dispatch => {
+    fetch(`http://localhost:8000/plots${params}`)
+      .then(res => res.json())
+      .then(res => {
+        dispatch(setSelectedPlots(res));
+      })
+      .catch(error => {
+      })
+  };
+}
+
+const setWells = (payload) => ({
   type: types.SET_WELLS,
   payload
 });
 
-export const setLogs = (payload) => ({
+const setLogs = (payload) => ({
   type: types.SET_LOGS,
   payload
 });
 
-export const setFormations = (payload) => ({
+const setFormations = (payload) => ({
   type: types.SET_FORMATIONS,
   payload
 });
 
 export const setPlots = (payload) => ({
   type: types.SET_PLOTS,
+  payload
+});
+
+const setSelectedPlots = (payload) => ({
+  type: types.SET_SELECTED_PLOTS,
   payload
 });
 
