@@ -9,7 +9,7 @@
     "connected-react-router": "^6.5.2",
     "history": "^4.10.1",
     "json-server": "^0.15.1",
-    "plotly.js": "^1.49.5",
+    "plotly.js": "^2.25.2",
     "prettier": "^1.18.2",
     "react": "16.10.2",
     "react-dom": "16.10.2",
